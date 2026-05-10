@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server'
 import { createServiceClient, createClient } from '@/lib/supabase/server'
 
-export async function DELETE(request: Request, { params }: { params: { code: string } }) {
+export async function DELETE(request: Request, { params }: { params: Promise<{ code: string }> }) {
   try {
-    const code = params.code
+    const { code } = await params
     if (!code) return NextResponse.json({ ok: false, error: 'Missing code' }, { status: 400 })
 
     const supabase = await createClient()

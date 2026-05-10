@@ -7,7 +7,7 @@ import { Metadata } from 'next'
 export const revalidate = 3600 // Revalidate every hour
 
 interface PageProps {
-  params: { code: string }
+  params: Promise<{ code: string }>
 }
 
 async function getImageMetadata(code: string) {
@@ -25,7 +25,7 @@ async function getImageMetadata(code: string) {
 
 // Generate dynamic Open Graph tags
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const code = params.code
+  const { code } = await params
   const data = await getImageMetadata(code)
   
   if (!data) return { title: 'Image Not Found' }
@@ -48,7 +48,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function ImagePage({ params }: PageProps) {
-  const code = params.code
+  const { code } = await params
   const data = await getImageMetadata(code)
 
   if (!data) {
